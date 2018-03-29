@@ -101,25 +101,40 @@
 <script>
 
   const checkboxes = document.querySelectorAll('.item input[type="checkbox"]');
-  let lastChecked;
+  var firstIndex = 0;
+  var lastIndex = 0;
 
-  function handleCheck(e){
-    if(e.shiftKey && this.checked){
-      let isBetween = false;
-      checkboxes.forEach(checkbox => {
-        if (checkbox === this || checkbox === lastChecked) {
-          isBetween = !isBetween;
+  checkboxes.forEach((checkbox, index) => {
+    checkbox.addEventListener('click', function(e){
+      if(checkbox.checked && e.shiftKey){
+
+        const result = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+        if (result.length > 1) {
+          lastIndex = index;
+
+          if (lastIndex > firstIndex){
+            checkboxes.forEach((checkbox, newindex) => {
+              if ((firstIndex < newindex) && (newindex < lastIndex)) {
+                checkbox.checked = true;
+                console.log(`${firstIndex} - ${newindex} - ${lastIndex}`);
+              } 
+            });
+          } else {
+            checkboxes.forEach((checkbox, newindex) => {
+              if ((firstIndex > newindex) && (newindex > lastIndex)) {
+                checkbox.checked = true;
+                console.log(`${firstIndex} - ${newindex} - ${lastIndex}`);
+              } 
+            });
+          }
         }
+      }
+      else {
+        firstIndex = index;
+      }
+    });
 
-        if (isBetween){
-          checkbox.checked = true;
-        }
-      });
-    }
-    lastChecked = this;
-  }
-
-  checkboxes.forEach(checkbox => checkbox.addEventListener('click', handleCheck));
+  });
 
 </script>
 
